@@ -14,3 +14,16 @@ npm run dev
 npm run build
 
 npm start
+
+touch .env.local
+touch .env.development
+touch .env.production
+
+# Define the Backend URL
+REACT_APP_API_URL=http://localhost:3000/api
+
+# Environment type
+REACT_APP_ENV=development
+
+# Debugging or testing key
+REACT_APP_DEBUG=true
