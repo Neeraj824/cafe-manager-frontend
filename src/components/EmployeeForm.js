@@ -73,16 +73,15 @@ const EmployeeForm = () => {
     if (formData.name.length < 6 || formData.name.length > 10) {
       newErrors.name = 'Name must be between 6 and 10 characters.';
     }
-    if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'Invalid email address.';
+    if (!emailRegex.test(formData.email_address)) {
+      newErrors.email_address = 'Invalid email address.';
     }
-    if (!phoneRegex.test(formData.phone)) {
-      newErrors.phone = 'Phone number must start with 8 or 9 and have 8 digits.';
+    if (!phoneRegex.test(formData.phone_number)) {
+      newErrors.phone_number = 'Phone number must start with 8 or 9 and have 8 digits.';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
