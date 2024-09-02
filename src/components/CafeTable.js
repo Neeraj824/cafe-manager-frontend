@@ -43,7 +43,9 @@ const CafesPage = ({ cafes, onEdit, onDelete }) => {
       headerName: 'Logo',
       field: 'logo',
       cellRenderer: ({ value }) => {
-        // Construct the full URL for the logo
+        if (!value) {
+          return <span>No Logo</span>; 
+        }
         const logoUrl = `${API_BASE_URL}${value}`;
         return <img src={logoUrl} alt="Logo" width="50" style={{ borderRadius: '8px' }} />;
       },
