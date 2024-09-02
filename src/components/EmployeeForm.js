@@ -32,6 +32,7 @@ const EmployeeForm = () => {
     cafe_id: '',
   });
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState(''); 
   const cafeList = useSelector((state) => state.cafe.cafes);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -82,19 +83,27 @@ const EmployeeForm = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+    
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    if (employeeId) {
-      await updateEmployee(employeeId, formData);
-      dispatch(updateEmployeeAction(formData));
-    } else {
-      const newEmployee = await createEmployee(formData);
-      dispatch(addEmployee(newEmployee));
+    try {
+      if (employeeId) {
+        await updateEmployee(employeeId, formData);
+        dispatch(updateEmployeeAction(formData));
+      } else {
+        const newEmployee = await createEmployee(formData);
+        dispatch(addEmployee(newEmployee));
+      }
+      navigate(`/employees/${cafeId}`);
+    } catch (error) {
+      // Assuming error response structure is { "error": "Validation error", "message": "..." }
+      if (error.response && error.response.data && error.response.data.error === "Validation error") {
+        setApiError(error.response.data.message);
+      } else {
+        setApiError('An unexpected error occurred. Please try again later.');
+      }
     }
-
-    navigate(`/employees/${cafeId}`);
   };
 
   const handleCancel = () => {
@@ -115,8 +124,15 @@ const EmployeeForm = () => {
         <Typography variant="h5" component="div" gutterBottom>
           {employeeId ? 'Edit Employee' : 'Add New Employee'}
         </Typography>
+        {apiError && (
+              <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+                {apiError}
+              </Typography>
+            )}
         <CardContent>
+          
           <form onSubmit={handleSubmit}>
+            
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <ReusableTextField
@@ -140,8 +156,8 @@ const EmployeeForm = () => {
                   onChange={handleChange}
                   required
                   fullWidth
-                  error={Boolean(errors.email)}
-                  helperText={errors.email}
+                  error={Boolean(errors.email_address)}
+                  helperText={errors.email_address}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -152,9 +168,9 @@ const EmployeeForm = () => {
                   onChange={handleChange}
                   required
                   fullWidth
-                  error={Boolean(errors.phone)}
+                  error={Boolean(errors.phone_number)}
                   inputProps={{ pattern: '^[89][0-9]{7}$' }}
-                  helperText={errors.phone}
+                  helperText={errors.phone_number}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -188,6 +204,7 @@ const EmployeeForm = () => {
                 </FormControl>
               </Grid>
             </Grid>
+           
           </form>
         </CardContent>
         <CardActions>
